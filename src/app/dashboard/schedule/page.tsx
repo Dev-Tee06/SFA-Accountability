@@ -2,6 +2,8 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import ScheduleForm from './ScheduleForm'
 
+export const dynamic = 'force-dynamic'
+
 export default async function SchedulePage() {
   const supabase = await createClient()
   
@@ -15,7 +17,7 @@ export default async function SchedulePage() {
     .single()
 
   return (
-    <div className="p-6 max-w-3xl mx-auto space-y-8">
+    <div className="p-4 md:p-6 lg:p-8 max-w-3xl mx-auto space-y-6 md:space-y-8 pb-24 md:pb-8">
       <header>
         <h1 className="text-2xl font-bold tracking-tight">Your Schedule</h1>
         <p className="text-gray-500 mt-1">Manage your daily commitment times.</p>

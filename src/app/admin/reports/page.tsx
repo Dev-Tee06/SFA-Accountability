@@ -2,6 +2,8 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import ReportsView, { ReportRecord } from './ReportsView'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminReports() {
   const supabase = await createClient()
   

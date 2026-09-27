@@ -1,7 +1,10 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import ActivityCard from '@/components/ActivityCard'
+import BookReadingCard from '@/components/BookReadingCard'
 import { format, startOfWeek, endOfWeek } from 'date-fns'
+
+export const dynamic = 'force-dynamic'
 
 export default async function DashboardHome() {
   const supabase = await createClient()
@@ -44,6 +47,25 @@ export default async function DashboardHome() {
     .eq('date', today)
     .maybeSingle()
 
+  const startOfWeekStr = format(startOfWeek(new Date(), { weekStartsOn: 1 }), 'yyyy-MM-dd')
+  const endOfWeekStr = format(endOfWeek(new Date(), { weekStartsOn: 1 }), 'yyyy-MM-dd')
+
+  const { count: bookSessionsCount } = await supabase
+    .from('book_reading_records')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', user.id)
+    .gte('date', startOfWeekStr)
+    .lte('date', endOfWeekStr)
+
+  const { data: bookRecordToday } = await supabase
+    .from('book_reading_records')
+    .select('id')
+    .eq('user_id', user.id)
+    .eq('date', today)
+    .limit(1)
+
+  const hasReadToday = bookRecordToday && bookRecordToday.length > 0
+
   // Determine the display name by checking user_metadata first, then profile, defaulting to Member
   const fullName = user.user_metadata?.full_name || profile?.full_name || 'Member'
   const firstName = fullName.split(' ')[0]
@@ -74,38 +96,58 @@ export default async function DashboardHome() {
   const studyDates = new Set(allStudies?.map(r => r.date) || [])
   const completedDates = new Set([...prayerDates].filter(d => studyDates.has(d)))
 
-  let currentStreak = 0
-  let currentDate = new Date()
-  
   // To avoid timezone issues, format dates strictly as YYYY-MM-DD
   const formatDate = (d: Date) => format(d, 'yyyy-MM-dd')
-  
-  const todayStr = formatDate(currentDate)
-  
-  // Check if today is completed
-  if (completedDates.has(todayStr)) {
-    currentStreak++
-    currentDate.setDate(currentDate.getDate() - 1)
-  } else {
-    // If today is not completed, check if yesterday was. 
-    // If yesterday was, the streak is still alive.
-    const yesterday = new Date(currentDate)
-    yesterday.setDate(yesterday.getDate() - 1)
-    if (!completedDates.has(formatDate(yesterday))) {
-      // Streak broken
+  const todayStr = formatDate(new Date())
+  const yesterdayStr = formatDate(new Date(new Date().setDate(new Date().getDate() - 1)))
+
+  // Calculate streak as of yesterday, allowing 1 missed day without breaking
+  let streakAsOfYesterday = 0;
+  let checkDate = new Date();
+  checkDate.setDate(checkDate.getDate() - 1);
+  let consecutiveMisses = 0;
+
+  while (true) {
+    let ds = formatDate(checkDate);
+    if (completedDates.has(ds)) {
+      streakAsOfYesterday++;
+      consecutiveMisses = 0;
     } else {
-      currentDate.setDate(currentDate.getDate() - 1)
+      consecutiveMisses++;
+      if (consecutiveMisses >= 2) {
+        break;
+      }
     }
+    checkDate.setDate(checkDate.getDate() - 1);
   }
 
-  // Count backwards for consecutive days
-  while (completedDates.has(formatDate(currentDate))) {
-    currentStreak++
-    currentDate.setDate(currentDate.getDate() - 1)
+  let currentStreak = streakAsOfYesterday;
+  if (completedDates.has(todayStr)) {
+    currentStreak++;
   }
+
+  const isStreakInDanger = !completedDates.has(todayStr) && !completedDates.has(yesterdayStr) && streakAsOfYesterday > 0;
 
   return (
-    <div className="p-6 md:p-8 max-w-4xl mx-auto space-y-8 pb-24 md:pb-8">
+    <div className="p-4 md:p-6 lg:p-8 max-w-4xl mx-auto space-y-6 md:space-y-8 pb-24 md:pb-8">
+      {isStreakInDanger && (
+        <div className="bg-red-50 border border-red-200 rounded-2xl p-4 flex items-start gap-4 shadow-sm animate-pulse">
+          <div className="bg-red-100 p-2 rounded-full text-red-600 mt-1">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+              <path d="M12 9v4"/>
+              <path d="M12 17h.01"/>
+            </svg>
+          </div>
+          <div>
+            <h3 className="text-red-800 font-bold text-lg">Streak in Danger!</h3>
+            <p className="text-red-600 text-sm mt-1">
+              You haven't completed your tasks for 2 days. Complete your activities today to save your {streakAsOfYesterday}-day streak before it resets to 0!
+            </p>
+          </div>
+        </div>
+      )}
+
       <header className="mb-10">
         <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900">
           Welcome, {firstName}
@@ -119,18 +161,29 @@ export default async function DashboardHome() {
           <ActivityCard
             type="prayer"
             title="Prayer"
-            time={schedule?.prayer_time || '06:00:00'}
+            time={schedule?.prayer_time}
+            duration={schedule?.prayer_duration || 60}
             record={prayerRecord}
             userId={user.id}
           />
           <ActivityCard
             type="study"
             title="Bible Study"
-            time={schedule?.bible_study_time || '20:00:00'}
+            time={schedule?.bible_study_time}
+            duration={schedule?.bible_study_duration || 60}
             record={studyRecord}
             userId={user.id}
           />
         </div>
+      </section>
+
+      <section className="space-y-5 mt-8">
+        <h2 className="text-xl font-bold tracking-tight text-gray-900">Weekly Goals</h2>
+        <BookReadingCard 
+          userId={user.id} 
+          completedSessions={bookSessionsCount || 0} 
+          hasReadToday={hasReadToday}
+        />
       </section>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-8">

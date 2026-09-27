@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { Home, CalendarDays, Clock, User, LogOut } from 'lucide-react'
+import { Home, CalendarDays, Clock, User, LogOut, Trophy } from 'lucide-react'
 import { createClient } from '@/utils/supabase/client'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -50,13 +50,14 @@ export default function DashboardLayout({
     { name: 'Home', href: '/dashboard', icon: Home },
     { name: 'Records', href: '/dashboard/records', icon: CalendarDays },
     { name: 'Schedule', href: '/dashboard/schedule', icon: Clock },
+    { name: 'Leaderboard', href: '/dashboard/leaderboard', icon: Trophy },
     { name: 'Profile', href: '/dashboard/profile', icon: User },
   ]
 
   return (
     <div className="min-h-screen bg-sfa-gray flex flex-col md:flex-row pb-20 md:pb-0">
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col w-72 bg-white border-r border-gray-100 shadow-sm z-10">
+      <aside className="hidden md:flex flex-col w-72 bg-white border-r border-gray-100 shadow-sm z-10 sticky top-0 h-screen">
         <div className="p-6 border-b border-gray-50 flex items-center gap-4">
           <Image src="/SFA.jpg" alt="SFA Logo" width={40} height={40} className="rounded-xl shadow-sm" />
           <span className="font-bold text-lg tracking-tight">Accountability</span>

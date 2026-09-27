@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation'
 import { format } from 'date-fns'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 export default async function MemberDetails({ params }: { params: { id: string } }) {
   const supabase = await createClient()
   

@@ -62,6 +62,7 @@ create table public.schedules (
   id uuid default uuid_generate_v4() primary key,
   user_id uuid references public.profiles(id) on delete cascade not null unique,
   prayer_time time not null default '06:00:00',
+  prayer_duration integer default 60,
   bible_study_time time not null default '20:00:00',
   reminder_enabled boolean default true,
   timezone text default 'UTC',
@@ -85,6 +86,7 @@ create table public.prayer_records (
   scheduled_time time not null,
   completed_at timestamp with time zone,
   status text not null default 'Pending' check (status in ('Pending', 'Completed', 'Missed')),
+  instructions text,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
   unique (user_id, date)
 );
@@ -106,6 +108,7 @@ create table public.bible_study_records (
   scheduled_time time not null,
   completed_at timestamp with time zone,
   status text not null default 'Pending' check (status in ('Pending', 'Completed', 'Missed')),
+  instructions text,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
   unique (user_id, date)
 );

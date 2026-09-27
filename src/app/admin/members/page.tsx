@@ -2,6 +2,8 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { format } from 'date-fns'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminMembers() {
   const supabase = await createClient()
   

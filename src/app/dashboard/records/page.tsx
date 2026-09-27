@@ -1,6 +1,8 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
-import { format, subDays } from 'date-fns'
+import { format, subDays, startOfWeek, endOfWeek } from 'date-fns'
+
+export const dynamic = 'force-dynamic'
 
 export default async function RecordsPage() {
   const supabase = await createClient()
@@ -36,11 +38,47 @@ export default async function RecordsPage() {
     return dateB - dateA
   })
 
+  // Calculate current week's score
+  const now = new Date()
+  const start = format(startOfWeek(now, { weekStartsOn: 1 }), 'yyyy-MM-dd')
+  const end = format(endOfWeek(now, { weekStartsOn: 1 }), 'yyyy-MM-dd')
+
+  const { data: leaderboardData } = await supabase.rpc('get_weekly_leaderboard', {
+    start_date: start,
+    end_date: end
+  })
+
+  let myWeeklyPercentage = 0
+  let myWeeklyCompleted = 0
+  const MAX_WEEKLY_TASKS = 14
+
+  if (leaderboardData) {
+    const myData = leaderboardData.find((row: any) => row.user_id === user.id)
+    if (myData) {
+      myWeeklyCompleted = Number(myData.completed_count)
+      myWeeklyPercentage = Math.round((myWeeklyCompleted / MAX_WEEKLY_TASKS) * 100)
+    }
+  }
+
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-8">
-      <header>
-        <h1 className="text-2xl font-bold tracking-tight">Activity History</h1>
-        <p className="text-gray-500 mt-1">Your complete accountability records.</p>
+    <div className="p-4 md:p-6 lg:p-8 max-w-4xl mx-auto space-y-6 md:space-y-8 pb-24 md:pb-8">
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Activity History</h1>
+          <p className="text-gray-500 mt-1">Your complete accountability records.</p>
+        </div>
+        
+        <div className="bg-white px-5 py-3 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4 min-w-[200px]">
+          <div>
+            <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">This Week's Score</div>
+            <div className="text-sm font-medium text-gray-900">{myWeeklyCompleted} / {MAX_WEEKLY_TASKS} Tasks</div>
+          </div>
+          <div className="flex-1 flex justify-end">
+            <div className={`text-2xl font-black ${myWeeklyPercentage >= 80 ? 'text-green-500' : myWeeklyPercentage >= 50 ? 'text-yellow-500' : 'text-sfa-red'}`}>
+              {myWeeklyPercentage}%
+            </div>
+          </div>
+        </div>
       </header>
 
       <section className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
