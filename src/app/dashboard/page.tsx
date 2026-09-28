@@ -64,7 +64,7 @@ export default async function DashboardHome() {
     .eq('date', today)
     .limit(1)
 
-  const hasReadToday = bookRecordToday && bookRecordToday.length > 0
+  const hasReadToday = Boolean(bookRecordToday && bookRecordToday.length > 0)
 
   // Determine the display name by checking user_metadata first, then profile, defaulting to Member
   const fullName = user.user_metadata?.full_name || profile?.full_name || 'Member'
