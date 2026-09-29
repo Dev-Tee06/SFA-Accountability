@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { Home, CalendarDays, Clock, User, LogOut, Trophy, Bell } from 'lucide-react'
 import { createClient } from '@/utils/supabase/client'
 import { motion, AnimatePresence } from 'framer-motion'
+import InAppReminder from '@/components/InAppReminder'
 
 export default function DashboardLayout({
   children,
@@ -57,6 +58,8 @@ export default function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-sfa-gray flex flex-col md:flex-row pb-20 md:pb-0">
+      <InAppReminder />
+      
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-72 bg-white border-r border-gray-100 shadow-sm z-10 sticky top-0 h-screen">
         <div className="p-6 border-b border-gray-50 flex items-center gap-4">
