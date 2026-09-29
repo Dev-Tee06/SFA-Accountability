@@ -4,9 +4,21 @@ import './globals.css'
 
 const manrope = Manrope({ subsets: ['latin'] })
 
+import type { Metadata, Viewport } from 'next'
+
+export const viewport: Viewport = {
+  themeColor: '#dc2626',
+}
+
 export const metadata: Metadata = {
   title: 'SFA Accountability Structure',
   description: 'Build consistency in prayer and Bible study through simple daily accountability.',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'SFA Accountability',
+  },
 }
 
 export default function RootLayout({
