@@ -1,0 +1,9 @@
+{
+  "tasks": {
+    "start": "deno run --allow-net --allow-env index.ts"
+  },
+  "imports": {
+    "jsr:@supabase/supabase-js": "npm:@supabase/supabase-js@2",
+    "npm:web-push": "npm:web-push@3.6.7"
+  }
+}
