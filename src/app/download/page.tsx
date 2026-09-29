@@ -8,7 +8,7 @@ export const metadata = {
 }
 
 export default function DownloadPage() {
-  const apkUrl = process.env.NEXT_PUBLIC_ANDROID_APK_URL || '#'
+  const apkUrl = process.env.NEXT_PUBLIC_ANDROID_APK_URL || '/sfa-app.apk'
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">

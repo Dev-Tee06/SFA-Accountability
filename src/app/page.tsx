@@ -16,6 +16,7 @@ export default function LandingPage() {
         <nav className="hidden md:flex gap-6 text-sm font-medium">
           <a href="#about" className="hover:text-sfa-red transition-colors">About</a>
           <a href="#how-it-works" className="hover:text-sfa-red transition-colors">How It Works</a>
+          <Link href="/download" className="hover:text-sfa-red transition-colors">Get the App</Link>
         </nav>
         <div className="flex items-center gap-4">
           <Link href="/login" className="text-sm font-medium hover:text-sfa-red transition-colors">
@@ -123,6 +124,7 @@ export default function LandingPage() {
           </div>
           <p className="text-sm text-gray-500">Simple daily accountability.</p>
           <div className="flex gap-4 text-sm font-medium">
+            <Link href="/download" className="hover:text-sfa-red transition-colors">Get the App</Link>
             <Link href="/login" className="hover:text-sfa-red transition-colors">Login</Link>
             <Link href="/register" className="hover:text-sfa-red transition-colors">Create Account</Link>
           </div>
