@@ -19,25 +19,53 @@ export default function DashboardLayout({
   const supabase = createClient()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
 
+  const [profile, setProfile] = useState<{ full_name: string; avatar_url: string | null } | null>(null)
+
   useEffect(() => {
-    async function checkAdmin() {
+    async function checkAdminAndProfile() {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
         if (user.email === 'babayodetestimony0318@gmail.com') {
           router.replace('/admin')
           return
         }
-        const { data: profile } = await supabase
+        const { data: pData } = await supabase
           .from('profiles')
-          .select('role')
+          .select('role, full_name, avatar_url')
           .eq('id', user.id)
           .single()
-        if (profile?.role === 'admin') {
-          router.replace('/admin')
+        
+        if (pData) {
+          if (pData.role === 'admin') {
+            router.replace('/admin')
+          } else {
+            setProfile({
+              full_name: pData.full_name || user.user_metadata?.full_name || 'Member',
+              avatar_url: pData.avatar_url
+            })
+          }
         }
       }
     }
-    checkAdmin()
+    checkAdminAndProfile()
+
+    // Listen for real-time updates to the profile (like avatar upload/delete)
+    const handleProfileUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      setProfile(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          ...customEvent.detail
+        };
+      });
+    };
+    
+    window.addEventListener('profile-updated', handleProfileUpdate);
+    
+    return () => {
+      window.removeEventListener('profile-updated', handleProfileUpdate);
+    };
   }, [router, supabase])
 
   const handleLogout = async () => {
@@ -52,7 +80,6 @@ export default function DashboardLayout({
     { name: 'Records', href: '/dashboard/records', icon: CalendarDays },
     { name: 'Schedule', href: '/dashboard/schedule', icon: Clock },
     { name: 'Leaderboard', href: '/dashboard/leaderboard', icon: Trophy },
-    { name: 'Alerts', href: '/dashboard/notifications', icon: Bell },
     { name: 'Profile', href: '/dashboard/profile', icon: User },
   ]
 
@@ -61,10 +88,25 @@ export default function DashboardLayout({
       <InAppReminder />
       
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col w-72 bg-white border-r border-gray-100 shadow-sm z-10 sticky top-0 h-screen">
-        <div className="p-6 border-b border-gray-50 flex items-center gap-4">
-          <Image src="/SFA.jpg" alt="SFA Logo" width={40} height={40} className="rounded-xl shadow-sm" />
-          <span className="font-bold text-lg tracking-tight">Accountability</span>
+      <aside className="hidden md:flex flex-col w-80 bg-white border-r border-gray-100 shadow-sm z-10 sticky top-0 h-screen shrink-0">
+        <div className="p-6 border-b border-gray-50 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Image src="/SFA.jpg" alt="SFA Logo" width={40} height={40} className="rounded-xl shadow-sm" />
+            <span className="font-bold text-lg tracking-tight">Accountability</span>
+          </div>
+          <div className="flex items-center gap-5">
+            <Link href="/dashboard/notifications" className="text-gray-400 hover:text-gray-900 transition-colors p-2 hover:bg-gray-50 rounded-full relative">
+              <Bell size={20} />
+              <span className="absolute top-2 right-2 w-2 h-2 bg-sfa-red rounded-full ring-2 ring-white"></span>
+            </Link>
+            <Link href="/dashboard/profile" className="relative w-8 h-8 rounded-full border border-gray-200 overflow-hidden bg-gray-50 flex items-center justify-center hover:ring-2 hover:ring-sfa-red transition-all shrink-0">
+              {profile?.avatar_url ? (
+                <Image src={profile.avatar_url} alt="Profile" fill className="object-cover" />
+              ) : (
+                <User size={16} className="text-gray-400" />
+              )}
+            </Link>
+          </div>
         </div>
         
         <nav className="flex-1 p-4 space-y-1">
@@ -114,22 +156,24 @@ export default function DashboardLayout({
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto relative">
-        <div className="md:hidden sticky top-0 bg-white/80 backdrop-blur-md border-b border-gray-100 p-4 flex justify-between items-center z-40 shadow-sm">
-          <div className="flex items-center gap-3">
-            <Image src="/SFA.jpg" alt="SFA Logo" width={32} height={32} className="rounded-lg shadow-sm" />
-            <span className="font-bold tracking-tight text-gray-900">SFA</span>
+        <div className="md:hidden sticky top-0 bg-white/80 backdrop-blur-md border-b border-gray-100 p-3 flex justify-between items-center z-40 shadow-sm overflow-hidden">
+          <div className="flex items-center gap-2 min-w-0">
+            <Image src="/SFA.jpg" alt="SFA Logo" width={28} height={28} className="rounded-md shadow-sm shrink-0" />
+            <span className="font-bold tracking-tight text-gray-900 truncate">SFA</span>
           </div>
-          <button 
-            onClick={handleLogout}
-            disabled={isLoggingOut}
-            className="text-gray-500 hover:text-sfa-red transition-colors p-2 rounded-full hover:bg-red-50"
-          >
-            {isLoggingOut ? (
-              <div className="w-5 h-5 border-2 border-sfa-red/30 border-t-sfa-red rounded-full animate-spin" />
-            ) : (
-              <LogOut size={20} />
-            )}
-          </button>
+          <div className="flex items-center gap-3 shrink-0">
+            <Link href="/dashboard/notifications" className="text-gray-500 hover:text-gray-900 transition-colors p-2 rounded-full hover:bg-gray-50 relative shrink-0">
+              <Bell size={20} />
+              <span className="absolute top-2 right-2 w-2 h-2 bg-sfa-red rounded-full ring-2 ring-white"></span>
+            </Link>
+            <Link href="/dashboard/profile" className="relative w-8 h-8 rounded-full border border-gray-200 overflow-hidden bg-gray-50 flex items-center justify-center hover:ring-2 hover:ring-sfa-red transition-all shrink-0">
+              {profile?.avatar_url ? (
+                <Image src={profile.avatar_url} alt="Profile" fill className="object-cover" />
+              ) : (
+                <User size={16} className="text-gray-400" />
+              )}
+            </Link>
+          </div>
         </div>
         
         <AnimatePresence mode="wait">

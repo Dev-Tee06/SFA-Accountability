@@ -26,59 +26,105 @@ export default function InAppReminder() {
     }
 
     loadSchedule()
-  }, [])
+
+    const handleScheduleUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      setSchedule(customEvent.detail);
+    };
+    
+    window.addEventListener('schedule-updated', handleScheduleUpdate);
+    return () => window.removeEventListener('schedule-updated', handleScheduleUpdate);
+  }, [supabase])
 
   useEffect(() => {
-    async function fetchSchedule() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return null
-
-      const { data } = await supabase
-        .from('schedules')
-        .select('*')
-        .eq('user_id', user.id)
-        .single()
-      
-      return data
+    // Request permission for OS-level notifications if not already granted
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      if (Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+        Notification.requestPermission();
+      }
     }
 
-    const checkTime = async () => {
-      if (activeAlert) return // Already showing an alert
+    if (!schedule) return;
 
-      // Always fetch the freshest schedule in case they just changed it
-      const currentSchedule = await fetchSchedule()
-      if (!currentSchedule) return
+    const checkTime = () => {
+      if (activeAlert) return // Already showing an alert
 
       const now = new Date()
       const localH = now.getHours().toString().padStart(2, '0')
       const localM = now.getMinutes().toString().padStart(2, '0')
       const currentTime = `${localH}:${localM}`
 
-      const prayerTime = currentSchedule.prayer_time?.substring(0, 5)
-      const bibleTime = currentSchedule.bible_study_time?.substring(0, 5)
+      const prayerTime = schedule.prayer_time?.substring(0, 5)
+      const bibleTime = schedule.bible_study_time?.substring(0, 5)
 
       // Include the exact time in the key so testing multiple times works
       const today = new Date().toDateString()
       
+      const triggerAlert = (type: string, title: string, message: string, key: string) => {
+        setActiveAlert({ type, title, message })
+        localStorage.setItem(key, 'true')
+        
+        // Trigger OS-level notification
+        if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+          new Notification(title, {
+            body: message,
+            icon: '/icon-192x192.png',
+            badge: '/icon-192x192.png',
+            requireInteraction: true // Keeps the notification on screen until dismissed
+          });
+        }
+      }
+
       if (currentTime === prayerTime) {
         const key = `in_app_prayer_${today}_${prayerTime}`
         if (!localStorage.getItem(key)) {
-          setActiveAlert({ type: 'prayer', title: 'Prayer Time', message: 'It is time for your scheduled prayer. Take a moment to pray and stay accountable.' })
-          localStorage.setItem(key, 'true')
+          triggerAlert('prayer', 'Prayer Time', 'It is time for your scheduled prayer. Take a moment to pray and stay accountable.', key)
         }
       } else if (currentTime === bibleTime) {
          const key = `in_app_bible_${today}_${bibleTime}`
          if (!localStorage.getItem(key)) {
-           setActiveAlert({ type: 'bible_study', title: 'Bible Study Time', message: 'Your scheduled Bible study time has arrived. Time to dive into the Word.' })
-           localStorage.setItem(key, 'true')
+           triggerAlert('bible_study', 'Bible Study Time', 'Your scheduled Bible study time has arrived. Time to dive into the Word.', key)
          }
       }
     }
 
-    checkTime() // Check immediately on mount/load
-    const interval = setInterval(checkTime, 20000) // Check every 20 seconds to be very responsive
+    checkTime() // Check immediately
+    const interval = setInterval(checkTime, 5000) // Check every 5 seconds! Low overhead.
 
     return () => clearInterval(interval)
+  }, [schedule, activeAlert])
+
+  useEffect(() => {
+    let audio: HTMLAudioElement | null = null;
+    let timeoutId: NodeJS.Timeout;
+
+    if (activeAlert) {
+      const audioFile = activeAlert.type === 'prayer' 
+        ? '/audio/Theophilus_Sunday_-_Oh_Oh_Adullam_CeeNaija.com_.mp3'
+        : '/audio/Michael_W_Smith_-_Ancient_Words_CeeNaija.com_.mp3'
+      
+      audio = new Audio(audioFile)
+      audio.loop = true
+      
+      // Attempt to play audio (browsers may block this without prior user interaction)
+      audio.play().catch(e => console.log('Audio autoplay blocked by browser:', e))
+
+      // Force stop after 60 seconds as per PRD
+      timeoutId = setTimeout(() => {
+        if (audio) {
+          audio.pause()
+          audio.currentTime = 0
+        }
+      }, 60000)
+    }
+
+    return () => {
+      if (audio) {
+        audio.pause()
+        audio.currentTime = 0
+      }
+      if (timeoutId) clearTimeout(timeoutId)
+    }
   }, [activeAlert])
 
   return (

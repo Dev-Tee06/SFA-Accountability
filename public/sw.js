@@ -7,6 +7,7 @@ self.addEventListener('push', function (event) {
         icon: '/icon-192x192.png',
         badge: '/icon-192x192.png',
         vibrate: [100, 50, 100],
+        sound: data.sound, // Attempt to play custom sound if supported by platform
         data: {
           url: data.url || '/',
         },

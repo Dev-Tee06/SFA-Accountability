@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { useRouter } from 'next/navigation'
+import TimePicker from '@/components/TimePicker'
 
 export default function ScheduleForm({ initialSchedule, userId }: { initialSchedule: any, userId: string }) {
   const [prayerTime, setPrayerTime] = useState(initialSchedule?.prayer_time ? initialSchedule.prayer_time.substring(0, 5) : '')
@@ -34,6 +35,14 @@ export default function ScheduleForm({ initialSchedule, userId }: { initialSched
       setMessage(`Unable to save your schedule: ${error.message}`)
     } else {
       setMessage('Schedule saved successfully.')
+      window.dispatchEvent(new CustomEvent('schedule-updated', { 
+        detail: { 
+          prayer_time: `${prayerTime}:00`, 
+          prayer_duration: prayerDuration,
+          bible_study_time: `${studyTime}:00`,
+          bible_study_duration: studyDuration
+        } 
+      }))
       router.refresh()
     }
     
@@ -52,12 +61,10 @@ export default function ScheduleForm({ initialSchedule, userId }: { initialSched
         <div>
           <label className="block text-sm font-medium mb-2">Prayer Time</label>
           <div className="flex items-center gap-4">
-            <input
-              type="time"
+            <TimePicker
+              id="prayerTime"
               value={prayerTime}
-              onChange={(e) => setPrayerTime(e.target.value)}
-              className="w-full border border-gray-300 rounded-md p-2 outline-none focus:border-sfa-red focus:ring-1 focus:ring-sfa-red text-lg"
-              required
+              onChange={(value) => setPrayerTime(value)}
             />
           </div>
           <p className="text-xs text-gray-500 mt-2">Historical records will not be affected by this change.</p>
@@ -87,12 +94,10 @@ export default function ScheduleForm({ initialSchedule, userId }: { initialSched
           <div>
             <label className="block text-sm font-medium mb-2">Bible Study Time</label>
             <div className="flex items-center gap-4">
-              <input
-                type="time"
+              <TimePicker
+                id="studyTime"
                 value={studyTime}
-                onChange={(e) => setStudyTime(e.target.value)}
-                className="w-full border border-gray-300 rounded-md p-2 outline-none focus:border-sfa-red focus:ring-1 focus:ring-sfa-red text-lg"
-                required
+                onChange={(value) => setStudyTime(value)}
               />
             </div>
             <p className="text-xs text-gray-500 mt-2">Historical records will not be affected by this change.</p>
