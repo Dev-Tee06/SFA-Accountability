@@ -29,31 +29,45 @@ export default function InAppReminder() {
   }, [])
 
   useEffect(() => {
-    if (!schedule) return
+    async function fetchSchedule() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return null
 
-    const checkTime = () => {
+      const { data } = await supabase
+        .from('schedules')
+        .select('*')
+        .eq('user_id', user.id)
+        .single()
+      
+      return data
+    }
+
+    const checkTime = async () => {
       if (activeAlert) return // Already showing an alert
 
+      // Always fetch the freshest schedule in case they just changed it
+      const currentSchedule = await fetchSchedule()
+      if (!currentSchedule) return
+
       const now = new Date()
-      // Use local system time for the active web session check
       const localH = now.getHours().toString().padStart(2, '0')
       const localM = now.getMinutes().toString().padStart(2, '0')
       const currentTime = `${localH}:${localM}`
 
-      const prayerTime = schedule.prayer_time?.substring(0, 5)
-      const bibleTime = schedule.bible_study_time?.substring(0, 5)
+      const prayerTime = currentSchedule.prayer_time?.substring(0, 5)
+      const bibleTime = currentSchedule.bible_study_time?.substring(0, 5)
 
-      // Only show once per day per type
+      // Include the exact time in the key so testing multiple times works
       const today = new Date().toDateString()
       
       if (currentTime === prayerTime) {
-        const key = `in_app_shown_prayer_${today}`
+        const key = `in_app_prayer_${today}_${prayerTime}`
         if (!localStorage.getItem(key)) {
           setActiveAlert({ type: 'prayer', title: 'Prayer Time', message: 'It is time for your scheduled prayer. Take a moment to pray and stay accountable.' })
           localStorage.setItem(key, 'true')
         }
       } else if (currentTime === bibleTime) {
-         const key = `in_app_shown_bible_${today}`
+         const key = `in_app_bible_${today}_${bibleTime}`
          if (!localStorage.getItem(key)) {
            setActiveAlert({ type: 'bible_study', title: 'Bible Study Time', message: 'Your scheduled Bible study time has arrived. Time to dive into the Word.' })
            localStorage.setItem(key, 'true')
@@ -62,10 +76,10 @@ export default function InAppReminder() {
     }
 
     checkTime() // Check immediately on mount/load
-    const interval = setInterval(checkTime, 30000) // Check every 30 seconds
+    const interval = setInterval(checkTime, 20000) // Check every 20 seconds to be very responsive
 
     return () => clearInterval(interval)
-  }, [schedule, activeAlert])
+  }, [activeAlert])
 
   return (
     <AnimatePresence>
