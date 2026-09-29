@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { Home, CalendarDays, Clock, User, LogOut, Trophy } from 'lucide-react'
+import { Home, CalendarDays, Clock, User, LogOut, Trophy, Bell } from 'lucide-react'
 import { createClient } from '@/utils/supabase/client'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -51,6 +51,7 @@ export default function DashboardLayout({
     { name: 'Records', href: '/dashboard/records', icon: CalendarDays },
     { name: 'Schedule', href: '/dashboard/schedule', icon: Clock },
     { name: 'Leaderboard', href: '/dashboard/leaderboard', icon: Trophy },
+    { name: 'Alerts', href: '/dashboard/notifications', icon: Bell },
     { name: 'Profile', href: '/dashboard/profile', icon: User },
   ]
 

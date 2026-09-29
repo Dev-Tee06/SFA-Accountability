@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, Users, Activity, BarChart3, LogOut, Menu, X } from 'lucide-react'
+import { LayoutDashboard, Users, Activity, BarChart3, LogOut, Menu, X, BellRing } from 'lucide-react'
 import { createClient } from '@/utils/supabase/client'
 import { useState } from 'react'
 
@@ -27,6 +27,7 @@ export default function AdminLayout({
     { name: 'Members', href: '/admin/members', icon: Users },
     { name: 'Accountability', href: '/admin/accountability', icon: Activity },
     { name: 'Reports', href: '/admin/reports', icon: BarChart3 },
+    { name: 'Broadcast', href: '/admin/notifications', icon: BellRing },
   ]
 
   const SidebarContent = () => (

@@ -12,7 +12,7 @@ export default async function DashboardHome() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  // Fetch Profile
+  // Fetch Profile first for fast admin check
   const { data: profile } = await supabase
     .from('profiles')
     .select('full_name, role')
@@ -23,46 +23,37 @@ export default async function DashboardHome() {
     redirect('/admin')
   }
 
-  // Fetch Schedule
-  const { data: schedule } = await supabase
-    .from('schedules')
-    .select('*')
-    .eq('user_id', user.id)
-    .single()
-
   const today = format(new Date(), 'yyyy-MM-dd')
-
-  // Fetch Today's Records
-  const { data: prayerRecord } = await supabase
-    .from('prayer_records')
-    .select('*')
-    .eq('user_id', user.id)
-    .eq('date', today)
-    .maybeSingle()
-
-  const { data: studyRecord } = await supabase
-    .from('bible_study_records')
-    .select('*')
-    .eq('user_id', user.id)
-    .eq('date', today)
-    .maybeSingle()
-
   const startOfWeekStr = format(startOfWeek(new Date(), { weekStartsOn: 1 }), 'yyyy-MM-dd')
   const endOfWeekStr = format(endOfWeek(new Date(), { weekStartsOn: 1 }), 'yyyy-MM-dd')
 
-  const { count: bookSessionsCount } = await supabase
-    .from('book_reading_records')
-    .select('*', { count: 'exact', head: true })
-    .eq('user_id', user.id)
-    .gte('date', startOfWeekStr)
-    .lte('date', endOfWeekStr)
+  // Parallelize the remaining heavy queries
+  const [
+    { data: schedule },
+    { data: prayerRecord },
+    { data: studyRecord },
+    { count: bookSessionsCount },
+    { data: bookRecordToday },
+    { data: allPrayers },
+    { data: allStudies }
+  ] = await Promise.all([
+    // Schedule
+    supabase.from('schedules').select('*').eq('user_id', user.id).single(),
+    
+    // Today's Records
+    supabase.from('prayer_records').select('*').eq('user_id', user.id).eq('date', today).maybeSingle(),
+    supabase.from('bible_study_records').select('*').eq('user_id', user.id).eq('date', today).maybeSingle(),
+    
+    // Book Sessions
+    supabase.from('book_reading_records').select('*', { count: 'exact', head: true })
+      .eq('user_id', user.id).gte('date', startOfWeekStr).lte('date', endOfWeekStr),
+      
+    supabase.from('book_reading_records').select('id').eq('user_id', user.id).eq('date', today).limit(1),
 
-  const { data: bookRecordToday } = await supabase
-    .from('book_reading_records')
-    .select('id')
-    .eq('user_id', user.id)
-    .eq('date', today)
-    .limit(1)
+    // Streak Logic (only grab dates, not all columns)
+    supabase.from('prayer_records').select('date').eq('user_id', user.id).eq('status', 'Completed').order('date', { ascending: false }),
+    supabase.from('bible_study_records').select('date').eq('user_id', user.id).eq('status', 'Completed').order('date', { ascending: false })
+  ])
 
   const hasReadToday = Boolean(bookRecordToday && bookRecordToday.length > 0)
 
@@ -76,21 +67,6 @@ export default async function DashboardHome() {
   const totalCompletedToday = completedPrayersToday + completedStudiesToday
   const maxActivities = 2
   const dailyPercentage = Math.round((totalCompletedToday / maxActivities) * 100)
-
-  // Streak Logic
-  const { data: allPrayers } = await supabase
-    .from('prayer_records')
-    .select('date')
-    .eq('user_id', user.id)
-    .eq('status', 'Completed')
-    .order('date', { ascending: false })
-
-  const { data: allStudies } = await supabase
-    .from('bible_study_records')
-    .select('date')
-    .eq('user_id', user.id)
-    .eq('status', 'Completed')
-    .order('date', { ascending: false })
 
   const prayerDates = new Set(allPrayers?.map(r => r.date) || [])
   const studyDates = new Set(allStudies?.map(r => r.date) || [])

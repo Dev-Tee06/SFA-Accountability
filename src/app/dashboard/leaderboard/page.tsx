@@ -69,7 +69,7 @@ export default async function LeaderboardPage({
     // Get all completed weeks
     const { data: weeks, error: weeksError } = await supabase
       .from('leaderboard_weeks')
-      .select('*')
+      .select('id, start_date, end_date')
       .eq('status', 'completed')
       .order('end_date', { ascending: false })
 
