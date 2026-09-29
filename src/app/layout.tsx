@@ -1,10 +1,9 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Manrope } from 'next/font/google'
 import './globals.css'
 
 const manrope = Manrope({ subsets: ['latin'] })
 
-import type { Metadata, Viewport } from 'next'
 
 export const viewport: Viewport = {
   themeColor: '#dc2626',
