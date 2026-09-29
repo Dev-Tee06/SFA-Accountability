@@ -11,6 +11,8 @@ export default function NotificationsPage() {
   const [pushStatus, setPushStatus] = useState<string>('checking')
   const [userId, setUserId] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
+  const [isIOS, setIsIOS] = useState(false)
+  const [isStandalone, setIsStandalone] = useState(false)
 
   useEffect(() => {
     async function loadPreferences() {
@@ -41,6 +43,11 @@ export default function NotificationsPage() {
     }
 
     loadPreferences()
+
+    // Detect iOS and standalone mode
+    const checkIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
+    setIsIOS(checkIOS)
+    setIsStandalone(window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone)
   }, [])
 
   const checkPushStatus = () => {
@@ -136,7 +143,12 @@ export default function NotificationsPage() {
           </div>
         </div>
         
-        {pushStatus !== 'granted' && pushStatus !== 'unsupported' && (
+        {isIOS && !isStandalone ? (
+          <div className="text-sm bg-blue-50 text-blue-800 p-4 rounded-lg border border-blue-200">
+            <strong>iOS User?</strong> To enable push notifications on iPhone or iPad, you must first add SFA to your Home Screen.<br/><br/>
+            Tap the <strong>Share</strong> button at the bottom of Safari, scroll down, and select <strong>"Add to Home Screen"</strong>. Then open the SFA app from your home screen to enable notifications.
+          </div>
+        ) : pushStatus !== 'granted' && pushStatus !== 'unsupported' && (
           <button 
             onClick={handleSubscribe}
             className="px-4 py-2 bg-sfa-red text-white font-medium rounded-lg shadow-sm hover:bg-red-700 transition whitespace-nowrap"

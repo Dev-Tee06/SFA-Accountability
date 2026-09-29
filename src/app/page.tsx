@@ -37,10 +37,13 @@ export default function LandingPage() {
           Build consistency in prayer and Bible study through simple daily accountability.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-          <Link href="/register" className="bg-sfa-red text-white px-8 py-3 rounded-md font-semibold text-lg hover:bg-red-700 transition-colors">
+          <Link href="/download" className="bg-black text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-gray-900 transition-colors flex items-center justify-center gap-2 border-2 border-black w-full sm:w-auto">
+            📱 Get the App
+          </Link>
+          <Link href="/register" className="bg-sfa-red text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-red-700 transition-colors w-full sm:w-auto">
             Get Started
           </Link>
-          <Link href="/login" className="border border-gray-200 bg-white text-black px-8 py-3 rounded-md font-semibold text-lg hover:bg-gray-50 transition-colors">
+          <Link href="/login" className="border border-gray-200 bg-white text-black px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-50 transition-colors w-full sm:w-auto">
             Login
           </Link>
         </div>
