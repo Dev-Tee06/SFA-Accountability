@@ -292,19 +292,19 @@ function LeaderboardList({ users, currentUserId, maxTasks, emptyMessage }: any) 
             return (
               <div 
                 key={person.id} 
-                className={`p-5 md:p-6 flex items-center justify-between transition-colors ${
+                className={`p-3 md:p-6 flex items-center justify-between transition-colors ${
                   isCurrentUser ? 'bg-red-50/30 dark:bg-sfa-red/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'
                 }`}
               >
-                <div className="flex items-center gap-4 md:gap-6">
+                <div className="flex items-center gap-2 md:gap-6 overflow-hidden">
                   <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 flex-shrink-0">
-                    {index === 0 ? <Trophy className="text-yellow-500" size={28} /> :
-                     index === 1 ? <Medal className="text-gray-400" size={28} /> :
-                     index === 2 ? <Medal className="text-amber-600" size={28} /> :
-                     <span className="text-xl font-bold text-gray-400">#{index + 1}</span>}
+                    {index === 0 ? <Trophy className="text-yellow-500 w-6 h-6 md:w-8 md:h-8" /> :
+                     index === 1 ? <Medal className="text-gray-400 w-6 h-6 md:w-8 md:h-8" /> :
+                     index === 2 ? <Medal className="text-amber-600 w-6 h-6 md:w-8 md:h-8" /> :
+                     <span className="text-lg md:text-xl font-bold text-gray-400">#{index + 1}</span>}
                   </div>
                   
-                  <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full border border-gray-200 dark:border-white/10 overflow-hidden bg-gray-50 dark:bg-black flex items-center justify-center flex-shrink-0">
+                  <div className="relative w-8 h-8 md:w-12 md:h-12 rounded-full border border-gray-200 dark:border-white/10 overflow-hidden bg-gray-50 dark:bg-black flex items-center justify-center flex-shrink-0">
                     {person.avatarUrl ? (
                       <Image src={person.avatarUrl} alt={person.name} fill className="object-cover" />
                     ) : (
@@ -312,18 +312,18 @@ function LeaderboardList({ users, currentUserId, maxTasks, emptyMessage }: any) 
                     )}
                   </div>
                   
-                  <div className="min-w-0 flex-1 pr-4 ml-1 md:ml-2">
-                    <h3 className={`font-bold text-lg truncate ${isCurrentUser ? 'text-sfa-red' : 'text-gray-900 dark:text-white'}`}>
-                      {person.name} {isCurrentUser && <span className="text-xs font-normal bg-sfa-red text-white px-2 py-0.5 rounded-full ml-2 align-middle">You</span>}
+                  <div className="min-w-0 flex-1 pr-2 md:pr-4 ml-1 md:ml-2">
+                    <h3 className={`font-bold text-sm md:text-lg truncate ${isCurrentUser ? 'text-sfa-red' : 'text-gray-900 dark:text-white'}`}>
+                      {person.name} {isCurrentUser && <span className="text-[10px] md:text-xs font-normal bg-sfa-red text-white px-2 py-0.5 rounded-full ml-1 md:ml-2 align-middle">You</span>}
                     </h3>
-                    <div className="text-sm font-medium text-gray-500 mt-0.5">
-                      {person.completedCount} / {maxTasks} tasks completed
+                    <div className="text-[10px] md:text-sm font-medium text-gray-500 mt-0.5">
+                      {person.completedCount} / {maxTasks} tasks
                     </div>
                   </div>
                 </div>
 
-                <div className="flex flex-col items-end gap-2">
-                  <div className="text-2xl md:text-3xl font-black tracking-tighter text-gray-900 dark:text-white">
+                <div className="flex flex-col items-end gap-1 md:gap-2 flex-shrink-0">
+                  <div className="text-lg md:text-3xl font-black tracking-tighter text-gray-900 dark:text-white">
                     {person.percentage}%
                   </div>
                   

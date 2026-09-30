@@ -33,7 +33,7 @@ export async function scheduleLocalNotifications(schedules: {
           title: 'Prayer Time',
           body: 'It is time for your scheduled prayer. Take a moment to pray and stay accountable.',
           id: 1,
-          schedule: { on: { hour, minute } },
+          schedule: { on: { hour, minute }, allowWhileIdle: true },
           smallIcon: 'ic_stat_icon_config_sample' // Optional custom icon if configured
         })
       }
@@ -46,7 +46,7 @@ export async function scheduleLocalNotifications(schedules: {
           title: 'Bible Study Time',
           body: 'Your scheduled Bible study time has arrived. Time to dive into the Word.',
           id: 2,
-          schedule: { on: { hour, minute } },
+          schedule: { on: { hour, minute }, allowWhileIdle: true },
           smallIcon: 'ic_stat_icon_config_sample'
         })
       }
