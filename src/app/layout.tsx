@@ -4,6 +4,7 @@ import './globals.css'
 import ServiceWorkerRegister from '@/components/ServiceWorkerRegister'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import InAppReminder from '@/components/InAppReminder'
+import { Analytics } from '@vercel/analytics/react'
 
 const manrope = Manrope({ subsets: ['latin'] })
 
@@ -35,6 +36,7 @@ export default function RootLayout({
           {children}
           <InAppReminder />
           <ServiceWorkerRegister />
+          <Analytics />
         </ThemeProvider>
       </body>
     </html>
