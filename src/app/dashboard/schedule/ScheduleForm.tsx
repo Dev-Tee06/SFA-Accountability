@@ -40,7 +40,7 @@ export default function ScheduleForm({ initialSchedule, userId }: { initialSched
       // Attempt to schedule native notifications (only applies if in Capacitor wrapper)
       await scheduleLocalNotifications({
         prayerTime,
-        bibleStudyTime,
+        bibleStudyTime: studyTime,
         prayerEnabled: true,
         bibleStudyEnabled: true
       })
