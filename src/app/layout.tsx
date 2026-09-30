@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from 'next'
 import { Manrope } from 'next/font/google'
 import './globals.css'
 import ServiceWorkerRegister from '@/components/ServiceWorkerRegister'
+import { ThemeProvider } from '@/components/ThemeProvider'
+import InAppReminder from '@/components/InAppReminder'
 
 const manrope = Manrope({ subsets: ['latin'] })
 
@@ -28,9 +30,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={manrope.className}>
-        {children}
-        <ServiceWorkerRegister />
+      <body className={`${manrope.className} bg-white text-gray-900 dark:bg-black dark:text-white transition-colors duration-300`}>
+        <ThemeProvider>
+          {children}
+          <InAppReminder />
+          <ServiceWorkerRegister />
+        </ThemeProvider>
       </body>
     </html>
   )

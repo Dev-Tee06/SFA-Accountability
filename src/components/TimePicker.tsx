@@ -81,30 +81,30 @@ export default function TimePicker({ value, onChange, id }: TimePickerProps) {
         <select
           value={time.hour}
           onChange={handleHourChange}
-          className="appearance-none bg-white border border-gray-300 rounded-md py-2.5 pl-4 pr-8 outline-none focus:border-sfa-red focus:ring-1 focus:ring-sfa-red text-lg font-medium shadow-sm hover:border-gray-400 transition-colors"
+          className="appearance-none bg-white dark:bg-black border border-gray-300 dark:border-white/10 text-gray-900 dark:text-white rounded-md py-2.5 pl-4 pr-8 outline-none focus:border-sfa-red focus:ring-1 focus:ring-sfa-red text-lg font-medium shadow-sm hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
         >
           {hours.map(h => (
-            <option key={h} value={h}>{h}</option>
+            <option key={h} value={h} className="dark:bg-black dark:text-white">{h}</option>
           ))}
         </select>
-        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500 dark:text-white">
           <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
         </div>
       </div>
       
-      <span className="text-xl font-bold text-gray-400">:</span>
+      <span className="text-xl font-bold text-gray-400 dark:text-white">:</span>
       
       <div className="relative">
         <select
           value={time.minute}
           onChange={handleMinuteChange}
-          className="appearance-none bg-white border border-gray-300 rounded-md py-2.5 pl-4 pr-8 outline-none focus:border-sfa-red focus:ring-1 focus:ring-sfa-red text-lg font-medium shadow-sm hover:border-gray-400 transition-colors"
+          className="appearance-none bg-white dark:bg-black border border-gray-300 dark:border-white/10 text-gray-900 dark:text-white rounded-md py-2.5 pl-4 pr-8 outline-none focus:border-sfa-red focus:ring-1 focus:ring-sfa-red text-lg font-medium shadow-sm hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
         >
           {minutes.map(m => (
-            <option key={m} value={m}>{m}</option>
+            <option key={m} value={m} className="dark:bg-black dark:text-white">{m}</option>
           ))}
         </select>
-        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500 dark:text-white">
           <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
         </div>
       </div>
@@ -113,12 +113,12 @@ export default function TimePicker({ value, onChange, id }: TimePickerProps) {
         <select
           value={time.period}
           onChange={handlePeriodChange}
-          className="appearance-none bg-white border border-gray-300 rounded-md py-2.5 pl-4 pr-8 outline-none focus:border-sfa-red focus:ring-1 focus:ring-sfa-red text-lg font-medium shadow-sm hover:border-gray-400 transition-colors"
+          className="appearance-none bg-white dark:bg-black border border-gray-300 dark:border-white/10 text-gray-900 dark:text-white rounded-md py-2.5 pl-4 pr-8 outline-none focus:border-sfa-red focus:ring-1 focus:ring-sfa-red text-lg font-medium shadow-sm hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
         >
-          <option value="AM">AM</option>
-          <option value="PM">PM</option>
+          <option value="AM" className="dark:bg-black dark:text-white">AM</option>
+          <option value="PM" className="dark:bg-black dark:text-white">PM</option>
         </select>
-        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500 dark:text-white">
           <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
         </div>
       </div>

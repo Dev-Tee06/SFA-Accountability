@@ -74,7 +74,7 @@ export default function ActivityCard({ type, title, time, duration = 60, record,
   }
 
   return (
-    <div className="bg-white p-5 rounded-[2rem] border border-gray-100 shadow-sm flex flex-col gap-4 relative">
+    <div className="bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:to-black p-5 rounded-[2rem] border border-gray-100 dark:border-white/10 shadow-sm flex flex-col gap-4 relative">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
         <div className="flex items-center gap-4 flex-1">
           <div className={`p-4 rounded-full flex-shrink-0 ${
@@ -88,8 +88,8 @@ export default function ActivityCard({ type, title, time, duration = 60, record,
           </div>
           
           <div className="min-w-0 flex-1">
-            <h3 className="font-bold text-lg text-gray-900 truncate">{title}</h3>
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-gray-500 mt-1 leading-snug">
+            <h3 className="font-bold text-lg text-gray-900 dark:text-white truncate">{title}</h3>
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-gray-500 dark:text-gray-400 mt-1 leading-snug">
               <span>Scheduled for {formattedTime} ({formatDuration(duration)})</span>
               <span className="hidden lg:inline text-gray-300">&bull;</span>
               <span className={`font-semibold ${
@@ -128,28 +128,28 @@ export default function ActivityCard({ type, title, time, duration = 60, record,
       
       {/* Side Note / Instructions Section */}
       {status === 'Pending' && (
-        <div className="pt-2 border-t border-gray-100 space-y-3">
+        <div className="pt-2 border-t border-gray-100 dark:border-white/10 space-y-3">
           {type === 'study' && (
             <div className="flex gap-3">
               <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Chapter</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Chapter</label>
                 <input
                   type="text"
                   value={chapter}
                   onChange={(e) => setChapter(e.target.value)}
                   placeholder="e.g. John 3"
-                  className="w-full border border-gray-200 rounded-xl p-2.5 outline-none focus:border-sfa-red focus:ring-1 focus:ring-sfa-red text-sm"
+                  className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-black/50 text-gray-900 dark:text-white rounded-xl p-2.5 outline-none focus:border-sfa-red focus:ring-1 focus:ring-sfa-red text-sm placeholder:text-gray-400"
                   required
                 />
               </div>
               <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Verses</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Verses</label>
                 <input
                   type="text"
                   value={verses}
                   onChange={(e) => setVerses(e.target.value)}
                   placeholder="e.g. 1-16"
-                  className="w-full border border-gray-200 rounded-xl p-2.5 outline-none focus:border-sfa-red focus:ring-1 focus:ring-sfa-red text-sm"
+                  className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-black/50 text-gray-900 dark:text-white rounded-xl p-2.5 outline-none focus:border-sfa-red focus:ring-1 focus:ring-sfa-red text-sm placeholder:text-gray-400"
                   required
                 />
               </div>
@@ -157,14 +157,14 @@ export default function ActivityCard({ type, title, time, duration = 60, record,
           )}
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
               <MessageSquare size={16} /> Did you receive any instructions today? (Optional)
             </label>
             <textarea
               value={instructions}
               onChange={(e) => setInstructions(e.target.value)}
               placeholder="Write down any notes or instructions received..."
-              className="w-full border border-gray-200 rounded-xl p-3 outline-none focus:border-sfa-red focus:ring-1 focus:ring-sfa-red text-sm min-h-[80px] resize-y"
+              className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-black/50 text-gray-900 dark:text-white rounded-xl p-3 outline-none focus:border-sfa-red focus:ring-1 focus:ring-sfa-red text-sm min-h-[80px] resize-y placeholder:text-gray-400"
             />
           </div>
         </div>
@@ -173,16 +173,16 @@ export default function ActivityCard({ type, title, time, duration = 60, record,
       {status === 'Completed' && (
         <div className="mt-2 space-y-2">
           {type === 'study' && (record?.chapter || record?.verses) && (
-            <div className="bg-blue-50 rounded-xl p-3 text-sm text-blue-800 border border-blue-100 flex gap-2">
+            <div className="bg-blue-50 dark:bg-blue-900/30 rounded-xl p-3 text-sm text-blue-800 dark:text-blue-200 border border-blue-100 dark:border-blue-800 flex gap-2">
               <strong>Read:</strong> {record.chapter} {record.verses ? `:${record.verses}` : ''}
             </div>
           )}
           {record?.instructions && (
-            <div className="bg-gray-50 rounded-xl p-4 text-sm text-gray-700 border border-gray-100">
+            <div className="bg-gray-50 dark:bg-black/40 rounded-xl p-4 text-sm text-gray-700 dark:text-gray-300 border border-gray-100 dark:border-white/10">
               <div className="font-semibold mb-1 flex items-center gap-2">
                 <MessageSquare size={16} /> Instructions Received
               </div>
-              <p className="whitespace-pre-wrap text-gray-600">{record.instructions}</p>
+              <p className="whitespace-pre-wrap text-gray-600 dark:text-gray-400">{record.instructions}</p>
             </div>
           )}
         </div>

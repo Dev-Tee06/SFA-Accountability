@@ -19,11 +19,11 @@ export default async function SchedulePage() {
   return (
     <div className="p-4 md:p-6 lg:p-8 max-w-3xl mx-auto space-y-6 md:space-y-8 pb-24 md:pb-8">
       <header>
-        <h1 className="text-2xl font-bold tracking-tight">Your Schedule</h1>
-        <p className="text-gray-500 mt-1">Manage your daily commitment times.</p>
+        <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Your Schedule</h1>
+        <p className="text-gray-500 dark:text-gray-400 mt-1">Manage your daily commitment times.</p>
       </header>
 
-      <section className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+      <section className="bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:to-black p-6 rounded-xl border border-gray-100 dark:border-white/10 shadow-sm">
         <ScheduleForm initialSchedule={schedule} userId={user.id} />
       </section>
     </div>

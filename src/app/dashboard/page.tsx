@@ -117,13 +117,13 @@ export default async function DashboardHome() {
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-red-50 rounded-full blur-[100px] -z-10 opacity-50 pointer-events-none" />
 
       <header className="pt-2 md:pt-6">
-        <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-gray-900 leading-tight flex flex-col md:block">
+        <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white leading-tight flex flex-col md:block">
           <span>{greeting},</span>
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-sfa-red to-red-600 truncate">
             {' '}{firstName}
           </span>
         </h1>
-        <p className="text-gray-500 mt-2 text-base md:text-lg font-medium">Here is your accountability for today.</p>
+        <p className="text-gray-500 dark:text-white mt-2 text-base md:text-lg font-medium">Here is your accountability for today.</p>
       </header>
 
       <section className="space-y-6">
@@ -146,33 +146,33 @@ export default async function DashboardHome() {
       </section>
 
       <div className="grid grid-cols-2 gap-3 md:gap-6">
-        <div className="bg-white p-4 md:p-8 rounded-2xl md:rounded-[2rem] border border-gray-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] flex flex-col justify-center items-center text-center transition-transform hover:-translate-y-1">
-          <div className="text-[10px] md:text-base text-gray-500 font-bold mb-1 md:mb-2 uppercase tracking-wider md:tracking-widest">Current Streak</div>
-          <div className="text-2xl md:text-5xl font-black text-gray-900 flex items-center">
+        <div className="bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:to-black p-4 md:p-8 rounded-2xl md:rounded-[2rem] border border-gray-100 dark:border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.04)] flex flex-col justify-center items-center text-center transition-transform hover:-translate-y-1">
+          <div className="text-[10px] md:text-base text-gray-500 dark:text-white font-bold mb-1 md:mb-2 uppercase tracking-wider md:tracking-widest">Current Streak</div>
+          <div className="text-2xl md:text-5xl font-black text-gray-900 dark:text-white flex items-center">
             <span className="text-orange-500 mr-1 md:mr-2">🔥</span>{currentStreak}
           </div>
         </div>
-        <div className="bg-white p-4 md:p-8 rounded-2xl md:rounded-[2rem] border border-gray-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] flex flex-col justify-center items-center text-center transition-transform hover:-translate-y-1">
-          <div className="text-[10px] md:text-base text-gray-500 font-bold mb-1 md:mb-2 uppercase tracking-wider md:tracking-widest">Weekly Score</div>
-          <div className="text-2xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-gray-900 to-gray-600">
+        <div className="bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:to-black p-4 md:p-8 rounded-2xl md:rounded-[2rem] border border-gray-100 dark:border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.04)] flex flex-col justify-center items-center text-center transition-transform hover:-translate-y-1">
+          <div className="text-[10px] md:text-base text-gray-500 dark:text-white font-bold mb-1 md:mb-2 uppercase tracking-wider md:tracking-widest">Weekly Score</div>
+          <div className="text-2xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-gray-900 to-gray-600 dark:from-white dark:to-gray-400">
             {weeklyPercentage}%
           </div>
         </div>
       </div>
 
-      <section className="bg-white rounded-2xl md:rounded-[2rem] border border-gray-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] overflow-hidden">
-        <div className="bg-gradient-to-r from-gray-50 to-white px-4 md:px-8 py-4 md:py-5 border-b border-gray-100 flex items-center justify-between">
-          <h2 className="font-bold text-gray-900 text-base md:text-lg">Monthly Progress</h2>
-          <span className="text-[10px] md:text-xs font-bold bg-red-50 text-sfa-red px-2 md:px-3 py-1 rounded-full uppercase tracking-wider">Current Month</span>
+      <section className="bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:to-black rounded-2xl md:rounded-[2rem] border border-gray-100 dark:border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.04)] overflow-hidden">
+        <div className="bg-gradient-to-r from-gray-50 to-white dark:from-black/40 dark:to-black/20 px-4 md:px-8 py-4 md:py-5 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
+          <h2 className="font-bold text-gray-900 dark:text-white text-base md:text-lg">Monthly Progress</h2>
+          <span className="text-[10px] md:text-xs font-bold bg-red-50 dark:bg-sfa-red/20 text-sfa-red px-2 md:px-3 py-1 rounded-full uppercase tracking-wider">Current Month</span>
         </div>
-        <div className="p-4 md:p-8 grid grid-cols-2 gap-3 md:gap-6 divide-x divide-gray-100">
+        <div className="p-4 md:p-8 grid grid-cols-2 gap-3 md:gap-6 divide-x divide-gray-100 dark:divide-white/10">
           <div className="text-center">
-            <div className="text-[10px] md:text-sm text-gray-500 font-bold uppercase tracking-wider md:tracking-widest mb-2 md:mb-3">Prayer Hours</div>
-            <div className="text-xl md:text-4xl font-black text-gray-900 truncate">{monthlyPrayerHours}</div>
+            <div className="text-[10px] md:text-sm text-gray-500 dark:text-white font-bold uppercase tracking-wider md:tracking-widest mb-2 md:mb-3">Prayer Hours</div>
+            <div className="text-xl md:text-4xl font-black text-gray-900 dark:text-white truncate">{monthlyPrayerHours}</div>
           </div>
           <div className="text-center">
-            <div className="text-[10px] md:text-sm text-gray-500 font-bold uppercase tracking-wider md:tracking-widest mb-2 md:mb-3">Study Hours</div>
-            <div className="text-xl md:text-4xl font-black text-gray-900 truncate">{monthlyStudyHours}</div>
+            <div className="text-[10px] md:text-sm text-gray-500 dark:text-white font-bold uppercase tracking-wider md:tracking-widest mb-2 md:mb-3">Study Hours</div>
+            <div className="text-xl md:text-4xl font-black text-gray-900 dark:text-white truncate">{monthlyStudyHours}</div>
           </div>
         </div>
       </section>
@@ -181,7 +181,7 @@ export default async function DashboardHome() {
         <div className="absolute top-0 right-0 w-64 h-64 bg-sfa-red/10 rounded-full blur-[80px] pointer-events-none" />
         <div className="relative z-10 w-full">
           <h2 className="font-bold text-white text-lg md:text-2xl mb-1 md:mb-2">Optional Tasks</h2>
-          <p className="text-gray-400 text-xs md:text-base max-w-sm">Log additional activities like evangelism and community service.</p>
+          <p className="text-white text-xs md:text-base max-w-sm">Log additional activities like evangelism and community service.</p>
         </div>
         <Link 
           href="/dashboard/tasks"

@@ -112,11 +112,11 @@ export default function ProfileForm({
   }
 
   return (
-    <div className="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100 shadow-sm space-y-8 relative overflow-hidden">
+    <div className="bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:to-black p-6 md:p-8 rounded-[2rem] border border-gray-100 dark:border-white/10 shadow-sm space-y-8 relative overflow-hidden">
       
       {/* Avatar Section */}
-      <div className="flex flex-col items-center sm:flex-row sm:items-start gap-6 border-b border-gray-100 pb-8">
-        <div className="relative w-32 h-32 rounded-full border-4 border-gray-50 overflow-hidden bg-gray-100 flex items-center justify-center shrink-0">
+      <div className="flex flex-col items-center sm:flex-row sm:items-start gap-6 border-b border-gray-100 dark:border-white/10 pb-8">
+        <div className="relative w-32 h-32 rounded-full border-4 border-gray-50 dark:border-white/10 overflow-hidden bg-gray-100 dark:bg-black/50 flex items-center justify-center shrink-0">
           {avatarUrl ? (
             <Image src={avatarUrl} alt="Profile" fill className="object-cover" />
           ) : (
@@ -130,8 +130,8 @@ export default function ProfileForm({
         </div>
         
         <div className="text-center sm:text-left space-y-3 pt-2">
-          <h3 className="font-bold text-gray-900 text-lg">Profile Picture</h3>
-          <p className="text-sm text-gray-500">A picture helps your group members recognize you.</p>
+          <h3 className="font-bold text-gray-900 dark:text-white text-lg">Profile Picture</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400">A picture helps your group members recognize you.</p>
           <div className="flex items-center justify-center sm:justify-start gap-3">
             <button 
               onClick={() => fileInputRef.current?.click()}
@@ -174,29 +174,29 @@ export default function ProfileForm({
         )}
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
-          <div className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl p-3 cursor-not-allowed truncate">
+          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
+          <div className="w-full bg-gray-50 dark:bg-black/50 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-gray-300 rounded-xl p-3 cursor-not-allowed truncate">
             {email}
           </div>
           <p className="text-xs text-gray-400 mt-1.5">Email cannot be changed.</p>
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2" htmlFor="name">Full Name</label>
+          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2" htmlFor="name">Full Name</label>
           <input
             id="name"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl p-3 outline-none focus:border-sfa-red focus:ring-2 focus:ring-red-100 transition-all"
+            className="w-full bg-white dark:bg-black/50 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white rounded-xl p-3 outline-none focus:border-sfa-red focus:ring-2 focus:ring-red-100 dark:focus:ring-red-900/50 transition-all"
             required
           />
         </div>
 
-        <div className="pt-6 border-t border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="pt-6 border-t border-gray-100 dark:border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h3 className="font-bold text-gray-900 text-lg">Background Notifications</h3>
-            <p className="text-sm text-gray-500 mt-1 max-w-sm">Enable push notifications to receive reminders on your lock screen even when the app is closed.</p>
+            <h3 className="font-bold text-gray-900 dark:text-white text-lg">Background Notifications</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 max-w-sm">Enable push notifications to receive reminders on your lock screen even when the app is closed.</p>
           </div>
           <button
             type="button"
@@ -219,7 +219,7 @@ export default function ProfileForm({
           </button>
         </div>
 
-        <div className="pt-6 border-t border-gray-100">
+        <div className="pt-6 border-t border-gray-100 dark:border-white/10">
           <button
             type="submit"
             disabled={isSaving || (name === initialName)}

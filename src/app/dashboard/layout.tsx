@@ -7,7 +7,7 @@ import Image from 'next/image'
 import { Home, CalendarDays, Clock, User, LogOut, Trophy, Bell } from 'lucide-react'
 import { createClient } from '@/utils/supabase/client'
 import { motion, AnimatePresence } from 'framer-motion'
-import InAppReminder from '@/components/InAppReminder'
+import ThemeToggle from '@/components/ThemeToggle'
 
 export default function DashboardLayout({
   children,
@@ -84,18 +84,18 @@ export default function DashboardLayout({
   ]
 
   return (
-    <div className="min-h-screen bg-sfa-gray flex flex-col md:flex-row pb-20 md:pb-0">
-      <InAppReminder />
+    <div className="min-h-screen bg-sfa-gray dark:bg-[#0a0a0a] flex flex-col md:flex-row pb-20 md:pb-0 transition-colors duration-300">
       
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col w-80 bg-white border-r border-gray-100 shadow-sm z-10 sticky top-0 h-screen shrink-0">
-        <div className="p-6 border-b border-gray-50 flex items-center justify-between">
+      <aside className="hidden md:flex flex-col w-80 bg-white dark:bg-black border-r border-gray-100 dark:border-white/10 shadow-sm z-10 sticky top-0 h-screen shrink-0 transition-colors duration-300">
+        <div className="p-6 border-b border-gray-50 dark:border-white/10 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Image src="/SFA.jpg" alt="SFA Logo" width={40} height={40} className="rounded-xl shadow-sm" />
-            <span className="font-bold text-lg tracking-tight">Accountability</span>
+            <Image src="/SFA.jpg" alt="SFA Logo" width={40} height={40} className="rounded-xl shadow-sm dark:ring-1 dark:ring-white/10" />
+            <span className="font-bold text-lg tracking-tight dark:text-white">Accountability</span>
           </div>
-          <div className="flex items-center gap-5">
-            <Link href="/dashboard/notifications" className="text-gray-400 hover:text-gray-900 transition-colors p-2 hover:bg-gray-50 rounded-full relative">
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            <Link href="/dashboard/notifications" className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors p-2 hover:bg-gray-50 dark:hover:bg-white/5 rounded-full relative">
               <Bell size={20} />
               <span className="absolute top-2 right-2 w-2 h-2 bg-sfa-red rounded-full ring-2 ring-white"></span>
             </Link>
@@ -119,30 +119,30 @@ export default function DashboardLayout({
                 className={`relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                   isActive 
                     ? 'text-sfa-red font-semibold' 
-                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+                    : 'text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'
                 }`}
               >
                 {isActive && (
                   <motion.div
                     layoutId="desktop-active"
-                    className="absolute inset-0 bg-red-50 rounded-xl"
+                    className="absolute inset-0 bg-red-50 dark:bg-sfa-red/10 rounded-xl"
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
                 )}
                 <span className="relative z-10 flex items-center gap-3">
                   <item.icon size={20} className={isActive ? 'text-sfa-red' : ''} />
-                  {item.name}
+                  <span className={isActive ? 'dark:text-white' : ''}>{item.name}</span>
                 </span>
               </Link>
             )
           })}
         </nav>
 
-        <div className="p-4 border-t border-gray-50 m-4">
+        <div className="p-4 border-t border-gray-50 dark:border-white/10 m-4">
           <button 
             onClick={handleLogout}
             disabled={isLoggingOut}
-            className="flex items-center justify-center gap-3 px-4 py-3 w-full text-center text-gray-500 hover:text-sfa-red hover:bg-red-50 rounded-xl transition-all font-medium disabled:opacity-50"
+            className="flex items-center justify-center gap-3 px-4 py-3 w-full text-center text-gray-500 hover:text-sfa-red hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all font-medium disabled:opacity-50"
           >
             {isLoggingOut ? (
               <div className="w-5 h-5 border-2 border-sfa-red/30 border-t-sfa-red rounded-full animate-spin" />
@@ -156,13 +156,14 @@ export default function DashboardLayout({
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto relative">
-        <div className="md:hidden sticky top-0 bg-white/80 backdrop-blur-md border-b border-gray-100 p-3 flex justify-between items-center z-40 shadow-sm overflow-hidden">
+        <div className="md:hidden sticky top-0 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-white/10 p-3 flex justify-between items-center z-40 shadow-sm overflow-hidden transition-colors duration-300">
           <div className="flex items-center gap-2 min-w-0">
-            <Image src="/SFA.jpg" alt="SFA Logo" width={28} height={28} className="rounded-md shadow-sm shrink-0" />
-            <span className="font-bold tracking-tight text-gray-900 truncate">SFA</span>
+            <Image src="/SFA.jpg" alt="SFA Logo" width={28} height={28} className="rounded-md shadow-sm shrink-0 dark:ring-1 dark:ring-white/10" />
+            <span className="font-bold tracking-tight text-gray-900 dark:text-white truncate">SFA</span>
           </div>
           <div className="flex items-center gap-3 shrink-0">
-            <Link href="/dashboard/notifications" className="text-gray-500 hover:text-gray-900 transition-colors p-2 rounded-full hover:bg-gray-50 relative shrink-0">
+            <ThemeToggle />
+            <Link href="/dashboard/notifications" className="text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors p-2 rounded-full hover:bg-gray-50 dark:hover:bg-white/5 relative shrink-0">
               <Bell size={20} />
               <span className="absolute top-2 right-2 w-2 h-2 bg-sfa-red rounded-full ring-2 ring-white"></span>
             </Link>
@@ -191,7 +192,7 @@ export default function DashboardLayout({
       </main>
 
       {/* Mobile Bottom Nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex justify-around p-2 z-50 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-black border-t border-gray-100 dark:border-white/10 flex justify-around p-2 z-50 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.02)] transition-colors duration-300">
         {navItems.map((item) => {
           const isActive = pathname === item.href
           return (
@@ -199,11 +200,11 @@ export default function DashboardLayout({
               key={item.name}
               href={item.href}
               className={`relative flex flex-col items-center p-2 rounded-xl min-w-[64px] transition-colors ${
-                isActive ? 'text-sfa-red' : 'text-gray-400 hover:text-gray-600'
+                isActive ? 'text-sfa-red' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
               }`}
             >
               <item.icon size={22} className={`mb-1 transition-transform ${isActive ? 'scale-110' : ''}`} />
-              <span className={`text-[10px] font-medium ${isActive ? 'font-semibold' : ''}`}>{item.name}</span>
+              <span className={`text-[10px] font-medium ${isActive ? 'font-semibold dark:text-white' : ''}`}>{item.name}</span>
             </Link>
           )
         })}
