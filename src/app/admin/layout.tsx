@@ -27,7 +27,6 @@ export default function AdminLayout({
     { name: 'Members', href: '/admin/members', icon: Users },
     { name: 'Accountability', href: '/admin/accountability', icon: Activity },
     { name: 'Reports', href: '/admin/reports', icon: BarChart3 },
-    { name: 'Broadcast', href: '/admin/notifications', icon: BellRing },
   ]
 
   const SidebarContent = () => (
@@ -80,7 +79,7 @@ export default function AdminLayout({
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col w-64 bg-gray-900 text-white min-h-screen">
+      <aside className="hidden md:flex flex-col w-64 bg-gray-900 text-white sticky top-0 h-screen shrink-0">
         <SidebarContent />
       </aside>
 

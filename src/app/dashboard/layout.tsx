@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { Home, CalendarDays, Clock, User, LogOut, Trophy, Bell } from 'lucide-react'
+import { Home, CalendarDays, Clock, User, LogOut, Trophy, Bell, BookOpen } from 'lucide-react'
 import { createClient } from '@/utils/supabase/client'
 import { motion, AnimatePresence } from 'framer-motion'
 import ThemeToggle from '@/components/ThemeToggle'
@@ -80,6 +80,7 @@ export default function DashboardLayout({
     { name: 'Records', href: '/dashboard/records', icon: CalendarDays },
     { name: 'Schedule', href: '/dashboard/schedule', icon: Clock },
     { name: 'Leaderboard', href: '/dashboard/leaderboard', icon: Trophy },
+    { name: 'Books', href: '/dashboard/books', icon: BookOpen },
     { name: 'Profile', href: '/dashboard/profile', icon: User },
   ]
 
@@ -88,14 +89,14 @@ export default function DashboardLayout({
       
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-80 bg-white dark:bg-black border-r border-gray-100 dark:border-white/10 shadow-sm z-10 sticky top-0 h-screen shrink-0 transition-colors duration-300">
-        <div className="p-6 border-b border-gray-50 dark:border-white/10 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Image src="/SFA.jpg" alt="SFA Logo" width={40} height={40} className="rounded-xl shadow-sm dark:ring-1 dark:ring-white/10" />
-            <span className="font-bold text-lg tracking-tight dark:text-white">Accountability</span>
+        <div className="p-4 border-b border-gray-50 dark:border-white/10 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Image src="/SFA.jpg" alt="SFA Logo" width={36} height={36} className="rounded-xl shadow-sm dark:ring-1 dark:ring-white/10 shrink-0" />
+            <span className="font-bold text-[17px] tracking-tight dark:text-white truncate">Accountability</span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 shrink-0">
             <ThemeToggle />
-            <Link href="/dashboard/notifications" className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors p-2 hover:bg-gray-50 dark:hover:bg-white/5 rounded-full relative">
+            <Link href="/dashboard/notifications" className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors p-2 hover:bg-gray-50 dark:hover:bg-white/5 rounded-full relative shrink-0">
               <Bell size={20} />
               <span className="absolute top-2 right-2 w-2 h-2 bg-sfa-red rounded-full ring-2 ring-white"></span>
             </Link>
@@ -162,6 +163,18 @@ export default function DashboardLayout({
             <span className="font-bold tracking-tight text-gray-900 dark:text-white truncate">SFA</span>
           </div>
           <div className="flex items-center gap-3 shrink-0">
+            <button 
+              onClick={handleLogout} 
+              disabled={isLoggingOut}
+              className="text-gray-500 hover:text-sfa-red dark:hover:text-sfa-red transition-colors p-2 rounded-full hover:bg-gray-50 dark:hover:bg-white/5 relative shrink-0"
+              title="Logout"
+            >
+              {isLoggingOut ? (
+                <div className="w-5 h-5 border-2 border-sfa-red/30 border-t-sfa-red rounded-full animate-spin" />
+              ) : (
+                <LogOut size={20} />
+              )}
+            </button>
             <ThemeToggle />
             <Link href="/dashboard/notifications" className="text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors p-2 rounded-full hover:bg-gray-50 dark:hover:bg-white/5 relative shrink-0">
               <Bell size={20} />
@@ -192,19 +205,19 @@ export default function DashboardLayout({
       </main>
 
       {/* Mobile Bottom Nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-black border-t border-gray-100 dark:border-white/10 flex justify-around p-2 z-50 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.02)] transition-colors duration-300">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-black border-t border-gray-100 dark:border-white/10 flex justify-between px-2 py-1 z-50 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.02)] transition-colors duration-300 overflow-x-hidden">
         {navItems.map((item) => {
           const isActive = pathname === item.href
           return (
             <Link
               key={item.name}
               href={item.href}
-              className={`relative flex flex-col items-center p-2 rounded-xl min-w-[64px] transition-colors ${
+              className={`relative flex flex-1 flex-col items-center p-1.5 rounded-xl transition-colors ${
                 isActive ? 'text-sfa-red' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
               }`}
             >
-              <item.icon size={22} className={`mb-1 transition-transform ${isActive ? 'scale-110' : ''}`} />
-              <span className={`text-[10px] font-medium ${isActive ? 'font-semibold dark:text-white' : ''}`}>{item.name}</span>
+              <item.icon size={20} className={`mb-0.5 transition-transform ${isActive ? 'scale-110' : ''}`} />
+              <span className={`text-[9px] font-medium text-center leading-tight truncate w-full px-0.5 ${isActive ? 'font-bold dark:text-white' : ''}`}>{item.name}</span>
             </Link>
           )
         })}

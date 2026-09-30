@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation'
 import ActivityCard from '@/components/ActivityCard'
 import Link from 'next/link'
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from 'date-fns'
+import Greeting from '@/components/Greeting'
+import CompletionPopup from '@/components/CompletionPopup'
 
 export const dynamic = 'force-dynamic'
 
@@ -54,10 +56,6 @@ export default async function DashboardHome() {
   // Name formatting
   const fullName = user.user_metadata?.full_name || profile?.full_name || 'Member'
   const firstName = fullName.split(' ')[0]
-
-  // Time based greeting
-  const hour = new Date().getHours()
-  const greeting = hour < 12 ? 'Good Morning' : hour < 18 ? 'Good Afternoon' : 'Good Evening'
 
   // Streak Logic
   const prayerDates = new Set(allPrayers?.map(r => r.date) || [])
@@ -111,18 +109,18 @@ export default async function DashboardHome() {
   const monthlyPrayerHours = formatHours(prayerDuration * completedPrayersThisMonth)
   const monthlyStudyHours = formatHours(studyDuration * completedStudiesThisMonth)
 
+  const isPrayerDone = prayerRecord?.status === 'Completed'
+  const isStudyDone = studyRecord?.status === 'Completed'
+
   return (
     <div className="p-4 md:p-6 lg:p-8 max-w-5xl mx-auto space-y-8 pb-24 md:pb-8 relative">
       {/* Background Decor */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-red-50 rounded-full blur-[100px] -z-10 opacity-50 pointer-events-none" />
 
+      <CompletionPopup isPrayerDone={isPrayerDone} isStudyDone={isStudyDone} />
+
       <header className="pt-2 md:pt-6">
-        <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white leading-tight flex flex-col md:block">
-          <span>{greeting},</span>
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-sfa-red to-red-600 truncate">
-            {' '}{firstName}
-          </span>
-        </h1>
+        <Greeting firstName={firstName} />
         <p className="text-gray-500 dark:text-white mt-2 text-base md:text-lg font-medium">Here is your accountability for today.</p>
       </header>
 

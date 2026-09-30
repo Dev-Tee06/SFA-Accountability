@@ -5,6 +5,7 @@ import { CheckCircle2, Clock, XCircle, MessageSquare } from 'lucide-react'
 import { createClient } from '@/utils/supabase/client'
 import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
+import { bibleBooks } from '@/lib/bibleData'
 
 type ActivityCardProps = {
   type: 'prayer' | 'study'
@@ -19,8 +20,9 @@ export default function ActivityCard({ type, title, time, duration = 60, record,
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [instructions, setInstructions] = useState(record?.instructions || '')
-  const [chapter, setChapter] = useState(record?.chapter || '')
-  const [verses, setVerses] = useState(record?.verses || '')
+  const [selectedBook, setSelectedBook] = useState('Genesis')
+  const [selectedChapterNum, setSelectedChapterNum] = useState('1')
+  const [selectedVerse, setSelectedVerse] = useState('1')
   
   const router = useRouter()
   const supabase = createClient()
@@ -55,8 +57,8 @@ export default function ActivityCard({ type, title, time, duration = 60, record,
       }
 
       if (type === 'study') {
-        payload.chapter = chapter
-        payload.verses = verses
+        payload.chapter = `${selectedBook} ${selectedChapterNum}`
+        payload.verses = `1-${selectedVerse}`
       }
 
       const { error: upsertError } = await supabase
@@ -107,7 +109,7 @@ export default function ActivityCard({ type, title, time, duration = 60, record,
           {status === 'Pending' && (
             <button
               onClick={handleComplete}
-              disabled={loading || !time || (type === 'study' && (!chapter || !verses))}
+              disabled={loading || !time}
               className="w-full lg:w-auto bg-gray-900 text-white px-5 py-2.5 text-sm rounded-xl font-medium hover:bg-black transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm whitespace-nowrap"
             >
               {loading ? (
@@ -130,28 +132,52 @@ export default function ActivityCard({ type, title, time, duration = 60, record,
       {status === 'Pending' && (
         <div className="pt-2 border-t border-gray-100 dark:border-white/10 space-y-3">
           {type === 'study' && (
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Chapter</label>
-                <input
-                  type="text"
-                  value={chapter}
-                  onChange={(e) => setChapter(e.target.value)}
-                  placeholder="e.g. John 3"
-                  className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-black/50 text-gray-900 dark:text-white rounded-xl p-2.5 outline-none focus:border-sfa-red focus:ring-1 focus:ring-sfa-red text-sm placeholder:text-gray-400"
-                  required
-                />
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Book</label>
+                <select
+                  value={selectedBook}
+                  onChange={(e) => {
+                    setSelectedBook(e.target.value)
+                    setSelectedChapterNum('1')
+                    setSelectedVerse('1')
+                  }}
+                  className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-black/50 text-gray-900 dark:text-white rounded-xl p-2.5 outline-none focus:border-sfa-red focus:ring-1 focus:ring-sfa-red text-sm"
+                >
+                  {bibleBooks.map((b) => (
+                    <option key={b.name} value={b.name}>{b.name}</option>
+                  ))}
+                </select>
               </div>
               <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Verses</label>
-                <input
-                  type="text"
-                  value={verses}
-                  onChange={(e) => setVerses(e.target.value)}
-                  placeholder="e.g. 1-16"
-                  className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-black/50 text-gray-900 dark:text-white rounded-xl p-2.5 outline-none focus:border-sfa-red focus:ring-1 focus:ring-sfa-red text-sm placeholder:text-gray-400"
-                  required
-                />
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Chapter</label>
+                <select
+                  value={selectedChapterNum}
+                  onChange={(e) => {
+                    setSelectedChapterNum(e.target.value)
+                    setSelectedVerse('1')
+                  }}
+                  className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-black/50 text-gray-900 dark:text-white rounded-xl p-2.5 outline-none focus:border-sfa-red focus:ring-1 focus:ring-sfa-red text-sm"
+                >
+                  {Array.from({ length: bibleBooks.find(b => b.name === selectedBook)?.chapters || 1 }, (_, i) => i + 1).map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Verses (1 to ...)</label>
+                <select
+                  value={selectedVerse}
+                  onChange={(e) => setSelectedVerse(e.target.value)}
+                  className="w-full border border-gray-200 dark:border-white/10 bg-white dark:bg-black/50 text-gray-900 dark:text-white rounded-xl p-2.5 outline-none focus:border-sfa-red focus:ring-1 focus:ring-sfa-red text-sm"
+                >
+                  {Array.from(
+                    { length: bibleBooks.find(b => b.name === selectedBook)?.versesPerChapter?.[parseInt(selectedChapterNum) - 1] || 1 },
+                    (_, i) => i + 1
+                  ).map((v) => (
+                    <option key={v} value={v}>{v}</option>
+                  ))}
+                </select>
               </div>
             </div>
           )}
