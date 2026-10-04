@@ -30,8 +30,8 @@ export async function POST(req: Request) {
     // Wait, createClient inside an API route has the admin's session, so if RLS allows admins to view all, it's fine.
     // If not, we might need a service role client. Let's use service role just in case.
     const serviceClient = (await import('@supabase/supabase-js')).createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      process.env.NEXT_PUBLIC_SUPABASE_URL!.trim(),
+      (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!).trim()
     );
 
     const { data: subs, error } = await serviceClient

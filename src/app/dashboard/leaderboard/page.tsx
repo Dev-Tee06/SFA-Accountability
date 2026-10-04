@@ -36,8 +36,8 @@ export default async function LeaderboardPage({
 
   // Fetch profiles to get avatars and filter out admins
   const supabaseAdmin = createAdminClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    serviceRoleKey
+    process.env.NEXT_PUBLIC_SUPABASE_URL!.trim(),
+    serviceRoleKey.trim()
   )
   const { data: allProfiles, error: profilesError } = await supabaseAdmin
     .from('profiles')
