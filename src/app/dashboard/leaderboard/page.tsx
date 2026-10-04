@@ -39,9 +39,22 @@ export default async function LeaderboardPage({
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     serviceRoleKey
   )
-  const { data: allProfiles } = await supabaseAdmin
+  const { data: allProfiles, error: profilesError } = await supabaseAdmin
     .from('profiles')
     .select('id, role, avatar_url, full_name')
+
+  if (profilesError) {
+    console.error("Error fetching profiles with admin client:", profilesError);
+    return (
+      <div className="p-4 md:p-6 lg:p-8 max-w-4xl mx-auto space-y-6 md:space-y-8 pb-24 md:pb-8">
+        <div className="bg-red-50 text-red-600 p-6 rounded-xl border border-red-100 mt-10">
+          <h2 className="text-xl font-bold mb-2">Supabase Admin Key Error</h2>
+          <p>Failed to fetch profiles using the Service Role Key. Please ensure the key you provided in <code>SUPABASE_SERVICE_ROLE_KEY</code> is correct and valid.</p>
+          <pre className="mt-4 p-4 bg-red-100 rounded text-sm overflow-auto">{profilesError.message}</pre>
+        </div>
+      </div>
+    )
+  }
 
   const adminIds = new Set(allProfiles?.filter(p => p.role === 'admin').map(p => p.id) || [])
   const profileMap = new Map(allProfiles?.map(p => [p.id, p]) || [])
