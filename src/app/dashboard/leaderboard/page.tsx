@@ -21,10 +21,23 @@ export default async function LeaderboardPage({
   const params = await searchParams;
   const tab = params.tab || 'current'
 
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.YOUR_SERVICE_ROLE_KEY;
+
+  if (!serviceRoleKey) {
+    return (
+      <div className="p-4 md:p-6 lg:p-8 max-w-4xl mx-auto space-y-6 md:space-y-8 pb-24 md:pb-8">
+        <div className="bg-red-50 text-red-600 p-6 rounded-xl border border-red-100 mt-10">
+          <h2 className="text-xl font-bold mb-2">Configuration Error</h2>
+          <p>The Supabase Service Role Key is missing. Please set <code>SUPABASE_SERVICE_ROLE_KEY</code> in your environment variables on production (e.g. Vercel dashboard).</p>
+        </div>
+      </div>
+    )
+  }
+
   // Fetch profiles to get avatars and filter out admins
   const supabaseAdmin = createAdminClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.YOUR_SERVICE_ROLE_KEY!
+    serviceRoleKey
   )
   const { data: allProfiles } = await supabaseAdmin
     .from('profiles')
