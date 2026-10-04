@@ -1,4 +1,5 @@
 import { createClient } from '@/utils/supabase/server'
+import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
 import { format, startOfWeek, endOfWeek } from 'date-fns'
 import { Trophy, Medal, History, CalendarDays, User } from 'lucide-react'
@@ -21,7 +22,11 @@ export default async function LeaderboardPage({
   const tab = params.tab || 'current'
 
   // Fetch profiles to get avatars and filter out admins
-  const { data: allProfiles } = await supabase
+  const supabaseAdmin = createAdminClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.YOUR_SERVICE_ROLE_KEY!
+  )
+  const { data: allProfiles } = await supabaseAdmin
     .from('profiles')
     .select('id, role, avatar_url, full_name')
 
@@ -69,7 +74,7 @@ export default async function LeaderboardPage({
     subtitle = 'View past performance records.'
     
     // Get all completed weeks
-    const { data: weeks, error: weeksError } = await supabase
+    const { data: weeks, error: weeksError } = await supabaseAdmin
       .from('leaderboard_weeks')
       .select('id, start_date, end_date')
       .eq('status', 'completed')
@@ -85,11 +90,12 @@ export default async function LeaderboardPage({
         subtitle = `Week of ${format(new Date(selectedWeek.start_date), 'MMM d')} - ${format(new Date(selectedWeek.end_date), 'MMM d, yyyy')}`
       }
 
-      const { data: historyData, error } = await supabase
+      const { data: historyData, error } = await supabaseAdmin
         .from('weekly_leaderboards')
         .select(`
           completed_count,
           rank,
+          user_id,
           profiles(id, full_name, avatar_url)
         `)
         .eq('week_id', selectedWeekId)
@@ -142,7 +148,7 @@ export default async function LeaderboardPage({
     subtitle = 'Aggregate performance across all completed weeks.'
     
     // Get unique months from leaderboard_weeks to build the selector
-    const { data: weeks } = await supabase
+    const { data: weeks } = await supabaseAdmin
       .from('leaderboard_weeks')
       .select('month, year')
       .eq('status', 'completed')
@@ -168,11 +174,12 @@ export default async function LeaderboardPage({
     // Estimate max tasks for a month (approx 4 weeks * 14 = 56)
     maxTasks = 56
 
-    const { data: monthlyData, error } = await supabase
+    const { data: monthlyData, error } = await supabaseAdmin
       .from('monthly_leaderboards')
       .select(`
         completed_count,
         rank,
+        user_id,
         profiles(id, full_name, avatar_url)
       `)
       .eq('month', selectedMonth)
